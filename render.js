@@ -68,6 +68,11 @@ function drawHomeStation() {
   ctx.arc(robot.home.x, robot.home.y, TILE_SIZE, 0, 2 * Math.PI);
   ctx.fill();
   ctx.stroke();
+  // Label the home station
+  ctx.font = 'bold 18px sans-serif';
+  ctx.fillStyle = '#222';
+  ctx.textAlign = 'center';
+  ctx.fillText('HOME', robot.home.x, robot.home.y - TILE_SIZE - 6);
   ctx.restore();
 }
 

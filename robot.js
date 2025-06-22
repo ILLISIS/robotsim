@@ -64,8 +64,14 @@ class Robot {
   start() {
     this.setRandomHome();
     if (this.path.length === 0) this.generatePath();
-    this.isMoving = true;
+    this.isMoving = false;
     this.charging = false;
+    // Set robot position to home
+    this.x = this.home.x;
+    this.y = this.home.y;
+    setTimeout(() => {
+      this.isMoving = true;
+    }, 1000);
   }
   stop() { this.isMoving = false; }
   reset(x, y, angle = 0) {
