@@ -10,6 +10,10 @@ const GRID_HEIGHT = 50;
 canvas.width = TILE_SIZE * GRID_WIDTH;
 canvas.height = TILE_SIZE * GRID_HEIGHT;
 
+let forbiddenArea = null;
+let isDrawingForbidden = false;
+let startCell = null;
+
 function drawMap() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#f0f0f0';
@@ -76,6 +80,22 @@ function drawHomeStation() {
   ctx.restore();
 }
 
+function drawForbiddenArea() {
+  if (forbiddenArea) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(255,0,0,0.25)';
+    ctx.strokeStyle = '#FF4136';
+    ctx.lineWidth = 2;
+    const left = forbiddenArea.x1 * TILE_SIZE;
+    const top = forbiddenArea.y1 * TILE_SIZE;
+    const width = (forbiddenArea.x2 - forbiddenArea.x1 + 1) * TILE_SIZE;
+    const height = (forbiddenArea.y2 - forbiddenArea.y1 + 1) * TILE_SIZE;
+    ctx.fillRect(left, top, width, height);
+    ctx.strokeRect(left, top, width, height);
+    ctx.restore();
+  }
+}
+
 // Remove drawBattery and update render/loop to update the battery display in the DOM
 function updateBatteryDisplay() {
   const batteryDiv = document.getElementById('batteryDisplay');
@@ -87,6 +107,7 @@ function updateBatteryDisplay() {
 
 function render() {
   drawMap();
+  drawForbiddenArea();
   drawPath();
   drawHomeStation();
   drawRobot();
@@ -106,6 +127,11 @@ const stopBtn = document.getElementById('stopBtn');
 const resetBtn = document.getElementById('resetBtn');
 
 startBtn.onclick = () => {
+  if (forbiddenArea) {
+    robot.setForbiddenArea(forbiddenArea.x1, forbiddenArea.y1, forbiddenArea.x2, forbiddenArea.y2);
+  } else {
+    robot.setForbiddenArea(null, null, null, null); // clear
+  }
   robot.start();
   if (!animationId) loop();
 };
@@ -125,6 +151,39 @@ resetBtn.onclick = () => {
 window.addEventListener('keydown', (e) => {
   if (e.key === 'a') robot.rotateLeft();
   if (e.key === 'd') robot.rotateRight();
+});
+
+canvas.addEventListener('mousedown', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  startCell = {
+    x: Math.floor(x / TILE_SIZE),
+    y: Math.floor(y / TILE_SIZE)
+  };
+  isDrawingForbidden = true;
+});
+
+canvas.addEventListener('mousemove', (e) => {
+  if (!isDrawingForbidden) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const endCell = {
+    x: Math.floor(x / TILE_SIZE),
+    y: Math.floor(y / TILE_SIZE)
+  };
+  forbiddenArea = {
+    x1: Math.min(startCell.x, endCell.x),
+    y1: Math.min(startCell.y, endCell.y),
+    x2: Math.max(startCell.x, endCell.x),
+    y2: Math.max(startCell.y, endCell.y)
+  };
+  render();
+});
+
+canvas.addEventListener('mouseup', () => {
+  isDrawingForbidden = false;
 });
 
 // Initial render
