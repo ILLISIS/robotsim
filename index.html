@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2D Robot Simulation</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    canvas { border: 1px solid #333; margin-top: 20px; }
+    .controls { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>2D Robot Simulation</h1>
+  <div class="controls">
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+  <canvas id="simCanvas" width="600" height="400"></canvas>
+  <script src="robot.js"></script>
+  <script src="render.js"></script>
+</body>
+</html>
