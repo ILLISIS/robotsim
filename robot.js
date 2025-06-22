@@ -15,6 +15,21 @@ class Robot {
     this.battery = 100; // percent
     this.charging = false;
     this.resumeIndex = 0; // Where to resume after charging
+    this.setRandomHome();
+  }
+
+  setRandomHome() {
+    const TILE_SIZE = 16;
+    const GRID_WIDTH = 50;
+    const GRID_HEIGHT = 50;
+    // Avoid edges for home station
+    const min = 2, maxW = GRID_WIDTH - 3, maxH = GRID_HEIGHT - 3;
+    const homeCol = Math.floor(Math.random() * (maxW - min + 1)) + min;
+    const homeRow = Math.floor(Math.random() * (maxH - min + 1)) + min;
+    this.home = {
+      x: homeCol * TILE_SIZE + TILE_SIZE,
+      y: homeRow * TILE_SIZE + TILE_SIZE
+    };
   }
 
   generatePath() {
@@ -47,6 +62,7 @@ class Robot {
   }
 
   start() {
+    this.setRandomHome();
     if (this.path.length === 0) this.generatePath();
     this.isMoving = true;
     this.charging = false;
@@ -62,6 +78,7 @@ class Robot {
     this.battery = 100;
     this.charging = false;
     this.resumeIndex = 0;
+    this.setRandomHome();
   }
 
   update() {
@@ -90,7 +107,7 @@ class Robot {
         this.x = target.x;
         this.y = target.y;
         this.pathIndex++;
-        this.battery -= 0.05; // Decrease battery per move
+        this.battery -= 0.05; // Decrease battery per move (half as much)
         if (this.pathIndex >= this.path.length) {
           this.stop();
         }
@@ -99,7 +116,7 @@ class Robot {
         this.x += this.speed * Math.cos(angleToTarget);
         this.y += this.speed * Math.sin(angleToTarget);
         this.angle = angleToTarget;
-        this.battery -= 0.05; // Decrease battery per move
+        this.battery -= 0.05; // Decrease battery per move (half as much)
       }
     }
   }
@@ -132,7 +149,7 @@ class Robot {
         this.x += this.speed * Math.cos(angleToTarget);
         this.y += this.speed * Math.sin(angleToTarget);
         this.angle = angleToTarget;
-        this.battery -= 0.05;
+        this.battery -= 0.05; // Decrease battery per move (half as much)
       }
     }
   }

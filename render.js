@@ -71,18 +71,13 @@ function drawHomeStation() {
   ctx.restore();
 }
 
-function drawBattery() {
-  ctx.save();
-  ctx.fillStyle = '#222';
-  ctx.fillRect(10, 10, 60, 16);
-  ctx.fillStyle = robot.battery > 20 ? '#2ECC40' : '#FF4136';
-  ctx.fillRect(12, 12, 0.56 * robot.battery, 12);
-  ctx.strokeStyle = '#fff';
-  ctx.strokeRect(10, 10, 60, 16);
-  ctx.font = '12px sans-serif';
-  ctx.fillStyle = '#fff';
-  ctx.fillText(Math.round(robot.battery) + '%', 22, 22);
-  ctx.restore();
+// Remove drawBattery and update render/loop to update the battery display in the DOM
+function updateBatteryDisplay() {
+  const batteryDiv = document.getElementById('batteryDisplay');
+  if (batteryDiv) {
+    batteryDiv.textContent = `Battery: ${Math.round(robot.battery)}%`;
+    batteryDiv.style.color = robot.battery > 20 ? '#2ECC40' : '#FF4136';
+  }
 }
 
 function render() {
@@ -90,7 +85,7 @@ function render() {
   drawPath();
   drawHomeStation();
   drawRobot();
-  drawBattery();
+  updateBatteryDisplay();
 }
 
 // Update animation loop to use robot.tick()
