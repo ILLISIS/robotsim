@@ -202,7 +202,7 @@ class Robot {
     }
     if (this.isMoving && this.path.length > 0) {
       // Battery check
-      if (this.battery <= 20) {
+      if (this.battery <= 20 && Robot.batteryDrainEnabled) {
         this.resumeIndex = this.pathIndex;
         this.goToHome();
         return;
@@ -215,7 +215,7 @@ class Robot {
         this.x = target.x;
         this.y = target.y;
         this.pathIndex++;
-        this.battery -= 0.05; // Decrease battery per move (half as much)
+        if (Robot.batteryDrainEnabled) this.battery -= 0.05;
         if (this.pathIndex >= this.path.length) {
           this.stop();
         }
@@ -224,7 +224,7 @@ class Robot {
         this.x += this.speed * Math.cos(angleToTarget);
         this.y += this.speed * Math.sin(angleToTarget);
         this.angle = angleToTarget;
-        this.battery -= 0.05; // Decrease battery per move (half as much)
+        if (Robot.batteryDrainEnabled) this.battery -= 0.05;
       }
     }
   }
@@ -257,7 +257,7 @@ class Robot {
         this.x += this.speed * Math.cos(angleToTarget);
         this.y += this.speed * Math.sin(angleToTarget);
         this.angle = angleToTarget;
-        this.battery -= 0.05; // Decrease battery per move (half as much)
+        if (Robot.batteryDrainEnabled) this.battery -= 0.05;
       }
     }
   }
@@ -272,7 +272,14 @@ class Robot {
 
   rotateLeft() { this.angle -= this.angularSpeed; }
   rotateRight() { this.angle += this.angularSpeed; }
+
+  static setBatteryDrainEnabled(enabled) {
+    Robot.batteryDrainEnabled = enabled;
+  }
 }
+
+// Add static property to control battery drain
+typeof Robot.batteryDrainEnabled === 'undefined' && (Robot.batteryDrainEnabled = true);
 
 // Export for use in render.js
 window.Robot = Robot;

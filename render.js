@@ -125,6 +125,7 @@ function loop() {
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');
 const resetBtn = document.getElementById('resetBtn');
+const batteryToggle = document.getElementById('batteryToggle');
 
 startBtn.onclick = () => {
   if (forbiddenArea) {
@@ -146,6 +147,10 @@ resetBtn.onclick = () => {
   robot.reset(100, 200, 0);
   render();
 };
+batteryToggle.onchange = (e) => {
+  window.Robot.setBatteryDrainEnabled(e.target.checked);
+};
+window.Robot.setBatteryDrainEnabled(batteryToggle.checked);
 
 // Optional: Keyboard controls for rotation
 window.addEventListener('keydown', (e) => {
